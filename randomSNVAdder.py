@@ -1,7 +1,6 @@
 import sys
 import random
 from subprocess import check_output
-./bedtools2/bin/bedtools intersect
 def randomSNVAdder(fastaName, nMuts):
   fasta = ""
   with open(fastaName) as f:
@@ -20,8 +19,11 @@ def randomSNVAdder(fastaName, nMuts):
       # call bed to make sure SNV is outside of centromere
       with open('snv.bed', 'w') as f:
         f.write('chr22\t%d\t%d\n' % (snv[0], snv[0]))
-      bedRes = check_output(['./bedtools intersect -v -a ./snv.bed -b ./centromeres.bed'],shell=True)
+      bedRes = check_output(['./bedtools2/bin/bedtools intersect -v -a ./snv.bed -b ./centromeres.bed'],shell=True)
+      if bedRes == '':
+        print "Failed SNV %d" %(snv[0])
       if snv not in mutationList and snv[2] != 'N' and bedRes != '':
+        print "adding %d: %s -> %s" % (snv[0], snv[1], snv[2])
         break
 
     mutationList.append(snv)
